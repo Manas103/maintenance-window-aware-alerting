@@ -1,0 +1,175 @@
+Seeded scenarios: 40
+Alerts fired: 40
+
+[01/40] NEW_EXEC_CONTROL_HOST            host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: New executable on a control host
+        line: {"event": "process_start", "host": "CTRL-SPACEVOY-01", "path": "C:\\Windows\\Temp\\update.exe", "pid": 9900, "sha256": "dfbc37e470917bdef84858a84d7a96885b533031a89d9f758a0b92aed033ecea", "ts": "2026-06-10T10:00:00Z", "user": "SYSTEM"}
+
+[02/40] NEW_EXEC_CONTROL_HOST            host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: New executable on a control host
+        line: {"event": "process_start", "host": "CTRL-JUNGLETREK-01", "path": "C:\\Windows\\Temp\\update.exe", "pid": 9901, "sha256": "fbd09ad25cc6820a6c18eb61315e8d8ee6517e9409b453fd751f507f979ccad1", "ts": "2026-06-11T11:00:00Z", "user": "SYSTEM"}
+
+[03/40] NEW_EXEC_CONTROL_HOST            host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: New executable on a control host
+        line: {"event": "process_start", "host": "CTRL-SPACEVOY-01", "path": "C:\\Windows\\Temp\\update.exe", "pid": 9902, "sha256": "398c253ca9bce09318b5fc11b119f8ad0856a3baa1a56398ff9109f119cce622", "ts": "2026-06-12T12:00:00Z", "user": "SYSTEM"}
+
+[04/40] NEW_EXEC_CONTROL_HOST            host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: New executable on a control host
+        line: {"event": "process_start", "host": "CTRL-JUNGLETREK-01", "path": "C:\\Windows\\Temp\\update.exe", "pid": 9903, "sha256": "a68ab81a3d584434a0a7ebd5e7ef857ad38d07b33c37198e1630757a09a308fa", "ts": "2026-06-13T13:00:00Z", "user": "SYSTEM"}
+
+[05/40] NEW_EXEC_CONTROL_HOST            host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: New executable on a control host
+        line: {"event": "process_start", "host": "CTRL-SPACEVOY-01", "path": "C:\\Windows\\Temp\\update.exe", "pid": 9904, "sha256": "d0f1cfcedb257371a4650cbb0e1a98ef91290a6ba6675c84e627cb4d1532da40", "ts": "2026-06-14T14:00:00Z", "user": "SYSTEM"}
+
+[06/40] REMOVABLE_MEDIA_BACKSTAGE        host=BACKSTAGE-SPACEVOY-01 -> ALERTED
+        rule: Removable media backstage
+        line: {"Channel": "System", "ClassName": "DiskDrive", "Computer": "BACKSTAGE-SPACEVOY-01", "DeviceDescription": "USB Mass Storage Device", "EventID": 6416, "Provider": "Microsoft-Windows-Kernel-General", "TimeCreated": "2026-06-10T11:00:00Z"}
+
+[07/40] REMOVABLE_MEDIA_BACKSTAGE        host=BACKSTAGE-JUNGLETREK-01 -> ALERTED
+        rule: Removable media backstage
+        line: {"Channel": "System", "ClassName": "DiskDrive", "Computer": "BACKSTAGE-JUNGLETREK-01", "DeviceDescription": "USB Mass Storage Device", "EventID": 6416, "Provider": "Microsoft-Windows-Kernel-General", "TimeCreated": "2026-06-11T12:00:00Z"}
+
+[08/40] REMOVABLE_MEDIA_BACKSTAGE        host=BACKSTAGE-SPACEVOY-01 -> ALERTED
+        rule: Removable media backstage
+        line: {"Channel": "System", "ClassName": "DiskDrive", "Computer": "BACKSTAGE-SPACEVOY-01", "DeviceDescription": "USB Mass Storage Device", "EventID": 6416, "Provider": "Microsoft-Windows-Kernel-General", "TimeCreated": "2026-06-12T13:00:00Z"}
+
+[09/40] REMOVABLE_MEDIA_BACKSTAGE        host=BACKSTAGE-JUNGLETREK-01 -> ALERTED
+        rule: Removable media backstage
+        line: {"Channel": "System", "ClassName": "DiskDrive", "Computer": "BACKSTAGE-JUNGLETREK-01", "DeviceDescription": "USB Mass Storage Device", "EventID": 6416, "Provider": "Microsoft-Windows-Kernel-General", "TimeCreated": "2026-06-13T14:00:00Z"}
+
+[10/40] REMOVABLE_MEDIA_BACKSTAGE        host=BACKSTAGE-SPACEVOY-01 -> ALERTED
+        rule: Removable media backstage
+        line: {"Channel": "System", "ClassName": "DiskDrive", "Computer": "BACKSTAGE-SPACEVOY-01", "DeviceDescription": "USB Mass Storage Device", "EventID": 6416, "Provider": "Microsoft-Windows-Kernel-General", "TimeCreated": "2026-06-14T15:00:00Z"}
+
+[11/40] ENG_LAPTOP_OFF_WINDOW            host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Engineering laptop reaching a controller off-window
+        line: Jun  3 15:00:00 fw-space-voyager fw[1000]: connection accepted src=ENG-LAPTOP-01 dst=CTRL-SPACEVOY-01 dst_port=502 proto=tcp
+
+[12/40] ENG_LAPTOP_OFF_WINDOW            host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Engineering laptop reaching a controller off-window
+        line: Jun  4 15:00:00 fw-jungle-trek fw[1001]: connection accepted src=ENG-LAPTOP-02 dst=CTRL-JUNGLETREK-01 dst_port=502 proto=tcp
+
+[13/40] ENG_LAPTOP_OFF_WINDOW            host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Engineering laptop reaching a controller off-window
+        line: Jun  5 15:00:00 fw-space-voyager fw[1002]: connection accepted src=ENG-LAPTOP-01 dst=CTRL-SPACEVOY-01 dst_port=502 proto=tcp
+
+[14/40] ENG_LAPTOP_OFF_WINDOW            host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Engineering laptop reaching a controller off-window
+        line: Jun  6 15:00:00 fw-jungle-trek fw[1003]: connection accepted src=ENG-LAPTOP-02 dst=CTRL-JUNGLETREK-01 dst_port=502 proto=tcp
+
+[15/40] MISSED_PATCH_WINDOW              host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Missed patch window
+        line: maintenance_calendar: window MW-MISSED-0 (MW-MISSED-0000) for CTRL-SPACEVOY-01 closed 2026-06-04T02:00:00-2026-06-04T04:00:00 with no patch_installed telemetry event on record
+
+[16/40] MISSED_PATCH_WINDOW              host=CTRL-SPACEVOY-02     -> ALERTED
+        rule: Missed patch window
+        line: maintenance_calendar: window MW-MISSED-1 (MW-MISSED-0001) for CTRL-SPACEVOY-02 closed 2026-06-06T02:00:00-2026-06-06T04:00:00 with no patch_installed telemetry event on record
+
+[17/40] MISSED_PATCH_WINDOW              host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Missed patch window
+        line: maintenance_calendar: window MW-MISSED-2 (MW-MISSED-0002) for CTRL-JUNGLETREK-01 closed 2026-06-08T02:00:00-2026-06-08T04:00:00 with no patch_installed telemetry event on record
+
+[18/40] MISSED_PATCH_WINDOW              host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Missed patch window
+        line: maintenance_calendar: window MW-MISSED-3 (MW-MISSED-0003) for CTRL-SPACEVOY-01 closed 2026-06-10T02:00:00-2026-06-10T04:00:00 with no patch_installed telemetry event on record
+
+[19/40] CLOCK_DRIFT                      host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Clock drift
+        line: {"event": "clock_check", "host": "CTRL-SPACEVOY-01", "host_ts": "2026-06-05T08:50:00Z", "ts": "2026-06-05T09:00:00Z"}
+
+[20/40] CLOCK_DRIFT                      host=HMI-JUNGLETREK-01    -> ALERTED
+        rule: Clock drift
+        line: {"event": "clock_check", "host": "HMI-JUNGLETREK-01", "host_ts": "2026-06-06T08:49:30Z", "ts": "2026-06-06T09:00:00Z"}
+
+[21/40] CLOCK_DRIFT                      host=HMI-SPACEVOY-01      -> ALERTED
+        rule: Clock drift
+        line: {"event": "clock_check", "host": "HMI-SPACEVOY-01", "host_ts": "2026-06-07T08:49:00Z", "ts": "2026-06-07T09:00:00Z"}
+
+[22/40] CLOCK_DRIFT                      host=HMI-JUNGLETREK-01    -> ALERTED
+        rule: Clock drift
+        line: {"event": "clock_check", "host": "HMI-JUNGLETREK-01", "host_ts": "2026-06-08T08:48:30Z", "ts": "2026-06-08T09:00:00Z"}
+
+[23/40] UNEXPECTED_SERVICE_LOGON         host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Unexpected service account logon
+        line: {"Channel": "Security", "Computer": "CTRL-SPACEVOY-01", "EventID": 4624, "IpAddress": "10.20.9.50", "LogonType": 10, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "svc_maint", "TimeCreated": "2026-06-07T13:00:00Z"}
+
+[24/40] UNEXPECTED_SERVICE_LOGON         host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Unexpected service account logon
+        line: {"Channel": "Security", "Computer": "CTRL-JUNGLETREK-01", "EventID": 4624, "IpAddress": "10.20.9.51", "LogonType": 10, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "svc_maint", "TimeCreated": "2026-06-08T13:00:00Z"}
+
+[25/40] UNEXPECTED_SERVICE_LOGON         host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Unexpected service account logon
+        line: {"Channel": "Security", "Computer": "CTRL-SPACEVOY-01", "EventID": 4624, "IpAddress": "10.20.9.52", "LogonType": 10, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "svc_maint", "TimeCreated": "2026-06-09T13:00:00Z"}
+
+[26/40] UNEXPECTED_SERVICE_LOGON         host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Unexpected service account logon
+        line: {"Channel": "Security", "Computer": "CTRL-JUNGLETREK-01", "EventID": 4624, "IpAddress": "10.20.9.53", "LogonType": 10, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "svc_maint", "TimeCreated": "2026-06-10T13:00:00Z"}
+
+[27/40] UNEXPECTED_SERVICE_LOGON         host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Unexpected service account logon
+        line: {"Channel": "Security", "Computer": "CTRL-SPACEVOY-01", "EventID": 4624, "IpAddress": "10.20.9.54", "LogonType": 10, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "svc_maint", "TimeCreated": "2026-06-11T13:00:00Z"}
+
+[28/40] CONTROL_HOST_REBOOT_OFF_WINDOW   host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Control host reboot outside window
+        line: {"Channel": "System", "Computer": "CTRL-SPACEVOY-01", "EventID": 1074, "ProcessName": "C:\\Windows\\System32\\winlogon.exe", "Provider": "Microsoft-Windows-Kernel-General", "Reason": "Unscheduled restart", "TimeCreated": "2026-06-02T16:00:00Z"}
+
+[29/40] CONTROL_HOST_REBOOT_OFF_WINDOW   host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Control host reboot outside window
+        line: {"Channel": "System", "Computer": "CTRL-JUNGLETREK-01", "EventID": 6008, "ProcessName": "C:\\Windows\\System32\\winlogon.exe", "Provider": "Microsoft-Windows-Kernel-General", "Reason": "Unscheduled restart", "TimeCreated": "2026-06-03T16:00:00Z"}
+
+[30/40] CONTROL_HOST_REBOOT_OFF_WINDOW   host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Control host reboot outside window
+        line: {"Channel": "System", "Computer": "CTRL-SPACEVOY-01", "EventID": 1074, "ProcessName": "C:\\Windows\\System32\\winlogon.exe", "Provider": "Microsoft-Windows-Kernel-General", "Reason": "Unscheduled restart", "TimeCreated": "2026-06-04T16:00:00Z"}
+
+[31/40] CONTROL_HOST_REBOOT_OFF_WINDOW   host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Control host reboot outside window
+        line: {"Channel": "System", "Computer": "CTRL-JUNGLETREK-01", "EventID": 6008, "ProcessName": "C:\\Windows\\System32\\winlogon.exe", "Provider": "Microsoft-Windows-Kernel-General", "Reason": "Unscheduled restart", "TimeCreated": "2026-06-05T16:00:00Z"}
+
+[32/40] ISOLATED_HOST_OUTBOUND           host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Outbound connection from an isolated control host
+        line: Jun  9 12:00:00 fw-space-voyager fw[2000]: connection accepted src=CTRL-SPACEVOY-01 dst=198.51.100.10 dst_port=443 proto=tcp
+
+[33/40] ISOLATED_HOST_OUTBOUND           host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Outbound connection from an isolated control host
+        line: Jun 10 12:00:00 fw-jungle-trek fw[2001]: connection accepted src=CTRL-JUNGLETREK-01 dst=198.51.100.11 dst_port=443 proto=tcp
+
+[34/40] ISOLATED_HOST_OUTBOUND           host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Outbound connection from an isolated control host
+        line: Jun 11 12:00:00 fw-space-voyager fw[2002]: connection accepted src=CTRL-SPACEVOY-01 dst=198.51.100.12 dst_port=443 proto=tcp
+
+[35/40] ISOLATED_HOST_OUTBOUND           host=CTRL-JUNGLETREK-01   -> ALERTED
+        rule: Outbound connection from an isolated control host
+        line: Jun 12 12:00:00 fw-jungle-trek fw[2003]: connection accepted src=CTRL-JUNGLETREK-01 dst=198.51.100.13 dst_port=443 proto=tcp
+
+[36/40] ISOLATED_HOST_OUTBOUND           host=CTRL-SPACEVOY-01     -> ALERTED
+        rule: Outbound connection from an isolated control host
+        line: Jun 13 12:00:00 fw-space-voyager fw[2004]: connection accepted src=CTRL-SPACEVOY-01 dst=198.51.100.14 dst_port=443 proto=tcp
+
+[37/40] REPEATED_FAILED_AUTH_HMI         host=HMI-SPACEVOY-01      -> ALERTED
+        rule: Repeated failed authentication on an HMI
+        line: {"Channel": "Security", "Computer": "HMI-SPACEVOY-01", "EventID": 4625, "IpAddress": "10.20.5.30", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator0", "TimeCreated": "2026-06-06T08:00:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-SPACEVOY-01", "EventID": 4625, "IpAddress": "10.20.5.30", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator0", "TimeCreated": "2026-06-06T08:02:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-SPACEVOY-01", "EventID": 4625, "IpAddress": "10.20.5.30", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator0", "TimeCreated": "2026-06-06T08:04:00Z"}
+
+[38/40] REPEATED_FAILED_AUTH_HMI         host=HMI-JUNGLETREK-01    -> ALERTED
+        rule: Repeated failed authentication on an HMI
+        line: {"Channel": "Security", "Computer": "HMI-JUNGLETREK-01", "EventID": 4625, "IpAddress": "10.20.5.31", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator1", "TimeCreated": "2026-06-07T08:00:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-JUNGLETREK-01", "EventID": 4625, "IpAddress": "10.20.5.31", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator1", "TimeCreated": "2026-06-07T08:02:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-JUNGLETREK-01", "EventID": 4625, "IpAddress": "10.20.5.31", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator1", "TimeCreated": "2026-06-07T08:04:00Z"}
+
+[39/40] REPEATED_FAILED_AUTH_HMI         host=HMI-SPACEVOY-01      -> ALERTED
+        rule: Repeated failed authentication on an HMI
+        line: {"Channel": "Security", "Computer": "HMI-SPACEVOY-01", "EventID": 4625, "IpAddress": "10.20.5.32", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator2", "TimeCreated": "2026-06-08T08:00:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-SPACEVOY-01", "EventID": 4625, "IpAddress": "10.20.5.32", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator2", "TimeCreated": "2026-06-08T08:02:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-SPACEVOY-01", "EventID": 4625, "IpAddress": "10.20.5.32", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator2", "TimeCreated": "2026-06-08T08:04:00Z"}
+
+[40/40] REPEATED_FAILED_AUTH_HMI         host=HMI-JUNGLETREK-01    -> ALERTED
+        rule: Repeated failed authentication on an HMI
+        line: {"Channel": "Security", "Computer": "HMI-JUNGLETREK-01", "EventID": 4625, "IpAddress": "10.20.5.33", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator3", "TimeCreated": "2026-06-09T08:00:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-JUNGLETREK-01", "EventID": 4625, "IpAddress": "10.20.5.33", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator3", "TimeCreated": "2026-06-09T08:02:00Z"}
+        line: {"Channel": "Security", "Computer": "HMI-JUNGLETREK-01", "EventID": 4625, "IpAddress": "10.20.5.33", "LogonType": 2, "Provider": "Microsoft-Windows-Security-Auditing", "TargetUserName": "operator3", "TimeCreated": "2026-06-09T08:04:00Z"}
+
+SUMMARY: 40 of 40 seeded events alerted naming the rule and its triggering log line(s)
+
+Clean operating days evaluated: 40
+False alerts on clean days: 0

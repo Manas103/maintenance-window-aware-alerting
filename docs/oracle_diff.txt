@@ -1,0 +1,15 @@
+== seeded corpus (40 scenarios + 14 clean baseline days) ==
+primary alerts:   40
+reference alerts: 40
+only in primary:   0
+only in reference: 0
+EXACT AGREEMENT: True
+
+== 40 clean operating days ==
+primary alerts:   0
+reference alerts: 0
+only in primary:   0
+only in reference: 0
+EXACT AGREEMENT: True
+
+ALL CORPORA AGREE EXACTLY: True
