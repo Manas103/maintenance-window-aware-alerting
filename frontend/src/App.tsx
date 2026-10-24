@@ -1,21 +1,24 @@
 import { useEffect, useState } from "react";
-import { fetchAlerts, fetchCalendar, fetchRules } from "./api";
+import { fetchAlerts, fetchCalendar, fetchIncidents, fetchRules } from "./api";
 import { AlertFeed } from "./components/AlertFeed";
 import { CalendarOverlay } from "./components/CalendarOverlay";
-import type { Alert, MaintenanceWindow, Rule } from "./types";
+import { IncidentPanel } from "./components/IncidentPanel";
+import type { Alert, IncidentsResponse, MaintenanceWindow, Rule } from "./types";
 
 export default function App() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [rules, setRules] = useState<Rule[]>([]);
   const [windows, setWindows] = useState<MaintenanceWindow[]>([]);
+  const [incidents, setIncidents] = useState<IncidentsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    Promise.all([fetchAlerts(), fetchRules(), fetchCalendar()])
-      .then(([a, r, w]) => {
+    Promise.all([fetchAlerts(), fetchRules(), fetchCalendar(), fetchIncidents()])
+      .then(([a, r, w, i]) => {
         setAlerts(a);
         setRules(r);
         setWindows(w);
+        setIncidents(i);
       })
       .catch((e) => setError(String(e)));
   }, []);
@@ -40,6 +43,11 @@ export default function App() {
       <section>
         <h2>Maintenance calendar</h2>
         <CalendarOverlay windows={windows} />
+      </section>
+
+      <section>
+        <h2>Incidents (process-ancestry correlation)</h2>
+        <IncidentPanel data={incidents} />
       </section>
 
       <section>

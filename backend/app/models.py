@@ -59,6 +59,13 @@ class Alert:
     triggering_lines: tuple
     explanation: str
     window_state: str  # "in_window" | "out_of_window" | "not_applicable"
+    # Process-ancestry attribution, carried through from the triggering
+    # event's own fields when present (None for alerts with no process to
+    # attribute, e.g. MISSED_PATCH_WINDOW). See correlation.py: two alerts
+    # are grouped into one incident when their (host, pid) nodes are
+    # connected through ppid edges, not by a shared label.
+    pid: Optional[int] = None
+    ppid: Optional[int] = None
 
     def key(self):
         """A content key used to diff two alert sets for exact agreement."""
@@ -68,4 +75,36 @@ class Alert:
             self.attraction,
             self.ts.isoformat(),
             tuple(sorted(self.triggering_lines)),
+            self.pid,
+            self.ppid,
+        )
+
+
+@dataclass(frozen=True)
+class Incident:
+    """One connected component of the process-ancestry graph over a set of
+    alerts, scored for analyst triage priority."""
+
+    incident_id: str
+    alert_ids: tuple
+    rule_ids: tuple  # distinct rule ids present, sorted
+    technique_ids: tuple  # distinct ATT&CK technique ids present, sorted
+    hosts: tuple  # distinct hosts present, sorted
+    start_ts: datetime
+    end_ts: datetime
+    fidelity_score: float  # 0..100, see correlation.py for the formula
+
+    def alert_count(self) -> int:
+        return len(self.alert_ids)
+
+    def content_key(self):
+        """A content key used to diff two incident sets for exact
+        agreement, ignoring the generated incident_id (the two engines
+        name incidents differently)."""
+        return (
+            tuple(sorted(self.alert_ids)),
+            self.rule_ids,
+            self.technique_ids,
+            self.hosts,
+            self.fidelity_score,
         )

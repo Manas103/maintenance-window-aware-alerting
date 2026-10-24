@@ -12,6 +12,27 @@ const mockAlert = {
   triggering_lines: ['{"EventID": 1, "Computer": "CTRL-SPACEVOY-01"}'],
   explanation: "test",
   window_state: "out_of_window",
+  technique_id: "T1204.002",
+  technique_name: "User Execution: Malicious File",
+  pid: null,
+  ppid: null,
+};
+
+const mockIncidents = {
+  incidents: [
+    {
+      incident_id: "INC-0",
+      alert_ids: [mockAlert.alert_id],
+      rule_ids: [mockAlert.rule_id],
+      technique_ids: [mockAlert.technique_id],
+      hosts: [mockAlert.host],
+      start_ts: mockAlert.ts,
+      end_ts: mockAlert.ts,
+      alert_count: 1,
+      fidelity_score: 8.2,
+    },
+  ],
+  reduction: { alerts_before: 1, incidents_after: 1, reduction_pct: 0.0 },
 };
 
 const mockRule = {
@@ -45,6 +66,9 @@ describe("App", () => {
         }
         if (url.includes("/calendar")) {
           return Promise.resolve({ ok: true, json: () => Promise.resolve([mockWindow]) } as Response);
+        }
+        if (url.includes("/incidents")) {
+          return Promise.resolve({ ok: true, json: () => Promise.resolve(mockIncidents) } as Response);
         }
         return Promise.reject(new Error("unexpected url " + url));
       }),

@@ -60,6 +60,12 @@ class AlertRow(Base):
     triggering_lines = Column(Text, nullable=False)  # JSON-encoded list[str]
     explanation = Column(Text, nullable=False)
     window_state = Column(String(32), nullable=False)
+    technique_id = Column(String(16), nullable=False)
+    technique_name = Column(String(200), nullable=False)
+    # Process-ancestry attribution; null for alerts with no causing process
+    # (MISSED_PATCH_WINDOW). See app/correlation.py.
+    pid = Column(Integer, nullable=True)
+    ppid = Column(Integer, nullable=True)
 
 
 def database_url() -> str:
@@ -94,6 +100,9 @@ def postgres_reachable(url: str) -> bool:
 
 
 def alert_to_row(alert) -> AlertRow:
+    from .attack import mapping_for
+
+    mapping = mapping_for(alert.rule_id)
     return AlertRow(
         alert_id=alert.alert_id,
         rule_id=alert.rule_id,
@@ -104,6 +113,31 @@ def alert_to_row(alert) -> AlertRow:
         triggering_lines=json.dumps(list(alert.triggering_lines)),
         explanation=alert.explanation,
         window_state=alert.window_state,
+        technique_id=mapping.technique_id,
+        technique_name=mapping.technique_name,
+        pid=alert.pid,
+        ppid=alert.ppid,
+    )
+
+
+def row_to_alert(row: AlertRow):
+    """The reverse of alert_to_row: reconstructs the dataclass Alert
+    object so app/correlation.py (which only knows about Alert, not the
+    ORM) can group rows read back out of the database."""
+    from .models import Alert
+
+    return Alert(
+        alert_id=row.alert_id,
+        rule_id=row.rule_id,
+        rule_name=row.rule_name,
+        host=row.host,
+        attraction=row.attraction,
+        ts=row.ts,
+        triggering_lines=tuple(json.loads(row.triggering_lines)),
+        explanation=row.explanation,
+        window_state=row.window_state,
+        pid=row.pid,
+        ppid=row.ppid,
     )
 
 
@@ -118,6 +152,10 @@ def row_to_dict(row: AlertRow) -> dict:
         "triggering_lines": json.loads(row.triggering_lines),
         "explanation": row.explanation,
         "window_state": row.window_state,
+        "technique_id": row.technique_id,
+        "technique_name": row.technique_name,
+        "pid": row.pid,
+        "ppid": row.ppid,
     }
 
 

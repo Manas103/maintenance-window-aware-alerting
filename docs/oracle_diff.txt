@@ -1,4 +1,4 @@
-== seeded corpus (40 scenarios + 14 clean baseline days) ==
+﻿== seeded corpus (40 scenarios + 14 clean baseline days) ==
 primary alerts:   40
 reference alerts: 40
 only in primary:   0

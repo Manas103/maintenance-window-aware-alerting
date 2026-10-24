@@ -22,6 +22,10 @@ describe("AlertFeed", () => {
             triggering_lines: ['{"event": "clock_check"}'],
             explanation: "drift",
             window_state: "out_of_window",
+            technique_id: "T1070.006",
+            technique_name: "Indicator Removal: Timestomp",
+            pid: null,
+            ppid: null,
           },
         ]}
       />,

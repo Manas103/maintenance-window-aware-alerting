@@ -1,15 +1,15 @@
-
+﻿
 > maintenance-window-aware-alerting-frontend@0.1.0 test
 > vitest run
 
 
-[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mC:/Users/Manas/Downloads/Total Job Application process flow/projects/maintenance-window-aware-alerting/frontend[39m
+ RUN  v2.1.9 C:/Users/Manas/Downloads/Auto Job Applier/Total Job Application process flow/projects/maintenance-window-aware-alerting/frontend
 
- [32m✓[39m tests/AlertFeed.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 27[2mms[22m[39m
- [32m✓[39m tests/App.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[90m 50[2mms[22m[39m
+ ✓ tests/AlertFeed.test.tsx (2 tests) 23ms
+ ✓ tests/App.test.tsx (2 tests) 48ms
 
-[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
-[2m      Tests [22m [1m[32m4 passed[39m[22m[90m (4)[39m
-[2m   Start at [22m 11:21:04
-[2m   Duration [22m 930ms[2m (transform 73ms, setup 161ms, collect 214ms, tests 77ms, environment 893ms, prepare 165ms)[22m
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  04:34:40
+   Duration  1.03s (transform 71ms, setup 175ms, collect 206ms, tests 71ms, environment 1.05s, prepare 153ms)
 

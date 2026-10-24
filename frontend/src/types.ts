@@ -8,6 +8,31 @@ export interface Alert {
   triggering_lines: string[];
   explanation: string;
   window_state: string;
+  technique_id: string;
+  technique_name: string;
+  pid: number | null;
+  ppid: number | null;
+}
+
+export interface Incident {
+  incident_id: string;
+  alert_ids: string[];
+  rule_ids: string[];
+  technique_ids: string[];
+  hosts: string[];
+  start_ts: string;
+  end_ts: string;
+  alert_count: number;
+  fidelity_score: number;
+}
+
+export interface IncidentsResponse {
+  incidents: Incident[];
+  reduction: {
+    alerts_before: number;
+    incidents_after: number;
+    reduction_pct: number;
+  };
 }
 
 export interface Rule {

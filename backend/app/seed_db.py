@@ -3,10 +3,16 @@
 Runs the primary engine over the seeded-incident corpus (14 clean baseline
 days plus the 40 seeded scenarios) so the API and dashboard have a
 realistic, non-trivial alert feed to show, and loads the rule table and
-maintenance calendar alongside it.
+maintenance calendar alongside it. Also runs it over the separate
+correlation corpus (correlation_fixtures.py: 15 process-ancestry-chained
+incidents plus 18 standalone alerts) and appends those alerts too, so
+GET /incidents has something to actually group; the two corpora's alerts
+coexist in the same table and are distinguished only by whether `pid` is
+set, exactly like app/correlation.py already expects.
 """
 from __future__ import annotations
 
+from .correlation_fixtures import CORRELATION_AS_OF, build_correlation_corpus
 from .db import (
     AlertRow,
     CalendarWindowRow,
@@ -21,8 +27,13 @@ from .rules import RULES
 
 
 def seed(session_factory) -> int:
+    hashes = known_good_hashes()
+
     events, calendar, _scenarios, as_of = build_seeded_corpus()
-    alerts = PrimaryEngine().evaluate(events, calendar, known_good_hashes(), as_of=as_of)
+    alerts = PrimaryEngine().evaluate(events, calendar, hashes, as_of=as_of)
+
+    corr_events, corr_calendar, _chained, _standalone = build_correlation_corpus()
+    corr_alerts = PrimaryEngine().evaluate(corr_events, corr_calendar, hashes, as_of=CORRELATION_AS_OF)
 
     session = session_factory()
     try:
@@ -43,8 +54,10 @@ def seed(session_factory) -> int:
             ))
         for a in alerts:
             session.add(alert_to_row(a))
+        for a in corr_alerts:
+            session.add(alert_to_row(a))
         session.commit()
-        return len(alerts)
+        return len(alerts) + len(corr_alerts)
     finally:
         session.close()
 

@@ -14,6 +14,7 @@ export function AlertFeed({ alerts }: Props) {
         <tr>
           <th>Time</th>
           <th>Rule</th>
+          <th>ATT&amp;CK</th>
           <th>Host</th>
           <th>Attraction</th>
           <th>Window state</th>
@@ -25,6 +26,9 @@ export function AlertFeed({ alerts }: Props) {
           <tr key={a.alert_id} data-testid="alert-row">
             <td>{a.ts}</td>
             <td>{a.rule_name}</td>
+            <td>
+              {a.technique_id} ({a.technique_name})
+            </td>
             <td>{a.host}</td>
             <td>{a.attraction}</td>
             <td>{a.window_state}</td>

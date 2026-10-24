@@ -1,24 +1,2 @@
-============================= test session starts =============================
-platform win32 -- Python 3.12.10, pytest-8.3.4, pluggy-1.6.0 -- C:\Users\Manas\Downloads\Total Job Application process flow\projects\maintenance-window-aware-alerting\venv\Scripts\python.exe
-cachedir: .pytest_cache
-rootdir: C:\Users\Manas\Downloads\Total Job Application process flow\projects\maintenance-window-aware-alerting\backend
-configfile: pytest.ini
-testpaths: tests
-plugins: anyio-4.15.1
-collecting ... collected 13 items
-
-tests/test_api.py::test_health PASSED                                    [  7%]
-tests/test_api.py::test_rules_endpoint_returns_nine PASSED               [ 15%]
-tests/test_api.py::test_calendar_endpoint_nonempty PASSED                [ 23%]
-tests/test_api.py::test_alerts_endpoint_returns_forty PASSED             [ 30%]
-tests/test_api.py::test_against_real_postgres SKIPPED (PostgreSQL no...) [ 38%]
-tests/test_clean_days.py::test_zero_false_alerts_across_forty_clean_days PASSED [ 46%]
-tests/test_oracle_diff.py::test_oracle_agrees_exactly_on_seeded_corpus PASSED [ 53%]
-tests/test_oracle_diff.py::test_oracle_agrees_exactly_on_clean_days PASSED [ 61%]
-tests/test_rules_and_calendar.py::test_exactly_nine_named_rules PASSED   [ 69%]
-tests/test_rules_and_calendar.py::test_required_five_rule_categories_present PASSED [ 76%]
-tests/test_rules_and_calendar.py::test_calendar_scores_every_attraction_and_control_host PASSED [ 84%]
-tests/test_seeded_events.py::test_forty_of_forty_seeded_events_alert_naming_rule_and_lines PASSED [ 92%]
-tests/test_sources.py::test_three_source_types_present_and_shaped_correctly PASSED [100%]
-
-======================== 12 passed, 1 skipped in 0.90s ========================
+﻿.....s.................                                                  [100%]
+22 passed, 1 skipped in 1.05s

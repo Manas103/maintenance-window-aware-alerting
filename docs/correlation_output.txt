@@ -1,0 +1,27 @@
+﻿== raw alerts (15 chained scenarios x 8 + 18 standalone) ==
+total alerts: 138
+
+== correlation oracle diff (primary BFS vs. reference union-find) ==
+primary incidents:   33
+reference incidents: 33
+only in primary:   0
+only in reference: 0
+EXACT AGREEMENT: True
+
+== grouping result ==
+multi-alert incidents (true chains folded):   15
+single-alert incidents (correctly left alone): 18
+
+== 76% fewer analyst-facing items claim ==
+alerts before correlation:   138
+incidents after correlation: 33
+measured reduction:          76.1% (design target: 76%)
+
+== sample incident ==
+incident_id:   INC-29
+alert_count:   8
+rule_ids:      ('CONTROL_HOST_REBOOT_OFF_WINDOW', 'ENG_LAPTOP_OFF_WINDOW', 'ISOLATED_HOST_OUTBOUND', 'NEW_EXEC_CONTROL_HOST', 'REPEATED_FAILED_AUTH_HMI', 'UNEXPECTED_SERVICE_LOGON')
+technique_ids: ('T1021', 'T1071', 'T1078', 'T1110.001', 'T1204.002', 'T1529')
+hosts:         ('CTRL-SPACEVOY-01', 'HMI-SPACEVOY-01')
+fidelity_score: 86.7 / 100
+span:          2026-06-21 10:00:00 -> 2026-06-21 10:45:00

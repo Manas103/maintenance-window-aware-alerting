@@ -48,7 +48,7 @@ def _window_at(calendar, attraction, host, ts):
     return None
 
 
-def _mk_alert(rule_id, host, attraction, ts, lines, explanation, window_state):
+def _mk_alert(rule_id, host, attraction, ts, lines, explanation, window_state, pid=None, ppid=None):
     rule = RULES_BY_ID[rule_id]
     return Alert(
         alert_id=f"{rule_id}|{host}|{ts.isoformat()}",
@@ -60,6 +60,8 @@ def _mk_alert(rule_id, host, attraction, ts, lines, explanation, window_state):
         triggering_lines=tuple(lines),
         explanation=explanation,
         window_state=window_state,
+        pid=pid,
+        ppid=ppid,
     )
 
 
@@ -103,6 +105,7 @@ class PrimaryEngine:
                     f"Unrecognized executable hash {e.fields.get('sha256')} started "
                     f"on control host {e.host} outside any maintenance window.",
                     "out_of_window",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -123,6 +126,7 @@ class PrimaryEngine:
                     f"Removable device recognized on backstage host {e.host} outside "
                     "any maintenance window.",
                     "out_of_window",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -147,6 +151,7 @@ class PrimaryEngine:
                     f"Engineering laptop {src} reached controller {dst} outside "
                     "any maintenance window.",
                     "out_of_window",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -194,6 +199,7 @@ class PrimaryEngine:
                     f"Host {e.host} clock drifted {drift:.0f}s from the collector's "
                     "receive time.",
                     _window_at(calendar, e.attraction, e.host, e.ts) and "in_window" or "out_of_window",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -216,6 +222,7 @@ class PrimaryEngine:
                     f"interactively (LogonType {e.fields.get('LogonType')}) to "
                     f"{e.host} outside any maintenance window.",
                     "out_of_window",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -236,6 +243,7 @@ class PrimaryEngine:
                     f"Control host {e.host} restarted ({e.kind}) outside any "
                     "maintenance window.",
                     "out_of_window",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -257,6 +265,7 @@ class PrimaryEngine:
                     f"Isolated control host {src} opened a connection to {dst}, "
                     "outside the attraction's private range.",
                     "not_applicable",
+                    pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                 )
             )
         return out
@@ -287,6 +296,7 @@ class PrimaryEngine:
                             f"{len(bucket)} failed logons on HMI {host} within "
                             f"{window} minutes.",
                             "not_applicable",
+                            pid=e0.fields.get("pid"), ppid=e0.fields.get("ppid"),
                         )
                     )
                     i = j

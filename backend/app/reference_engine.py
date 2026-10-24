@@ -31,7 +31,7 @@ def _window_for(calendar, attraction, host, ts):
     return None
 
 
-def _alert(rule_id, host, attraction, ts, lines, explanation, window_state):
+def _alert(rule_id, host, attraction, ts, lines, explanation, window_state, pid=None, ppid=None):
     rule = RULES_BY_ID[rule_id]
     return Alert(
         alert_id=f"{rule_id}|{host}|{ts.isoformat()}",
@@ -43,6 +43,8 @@ def _alert(rule_id, host, attraction, ts, lines, explanation, window_state):
         triggering_lines=tuple(lines),
         explanation=explanation,
         window_state=window_state,
+        pid=pid,
+        ppid=ppid,
     )
 
 
@@ -70,6 +72,7 @@ class ReferenceEngine:
                             [e.raw],
                             f"Unrecognized executable hash on {e.host} outside a window.",
                             "out_of_window",
+                            pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                         ))
 
             elif e.kind == "device_added" and e.host.startswith("BACKSTAGE-"):
@@ -79,6 +82,7 @@ class ReferenceEngine:
                         [e.raw],
                         f"Removable device recognized on {e.host} outside a window.",
                         "out_of_window",
+                        pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                     ))
 
             elif e.kind == "netconn":
@@ -91,6 +95,7 @@ class ReferenceEngine:
                             [e.raw],
                             f"Engineering laptop {src} reached {dst} outside a window.",
                             "out_of_window",
+                            pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                         ))
                 if src.startswith("CTRL-"):
                     is_internal = (
@@ -104,6 +109,7 @@ class ReferenceEngine:
                             [e.raw],
                             f"Isolated host {src} connected outside the private range to {dst}.",
                             "not_applicable",
+                            pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                         ))
 
             elif e.kind == "clock_check":
@@ -118,6 +124,7 @@ class ReferenceEngine:
                         "CLOCK_DRIFT", e.host, e.attraction, e.ts, [e.raw],
                         f"Clock drift of {drift_seconds:.0f}s on {e.host}.",
                         "in_window" if w else "out_of_window",
+                        pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                     ))
 
             elif e.kind == "logon":
@@ -130,6 +137,7 @@ class ReferenceEngine:
                             [e.raw],
                             f"Service account {user} logged on interactively to {e.host}.",
                             "out_of_window",
+                            pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                         ))
 
             elif e.kind in ("restart_planned", "restart_unexpected") and e.host.startswith("CTRL-"):
@@ -139,6 +147,7 @@ class ReferenceEngine:
                         [e.raw],
                         f"Control host {e.host} restarted outside a window.",
                         "out_of_window",
+                        pid=e.fields.get("pid"), ppid=e.fields.get("ppid"),
                     ))
 
         # Repeated failed auth: separate pass, needs the full per-host
@@ -161,6 +170,7 @@ class ReferenceEngine:
                         [b.raw for b in bucket],
                         f"{len(bucket)} failed logons on {host} within 10 minutes.",
                         "not_applicable",
+                        pid=bucket[0].fields.get("pid"), ppid=bucket[0].fields.get("ppid"),
                     ))
                     i = k
                 else:

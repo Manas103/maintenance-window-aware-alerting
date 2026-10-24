@@ -7,12 +7,14 @@ from __future__ import annotations
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from .correlation import PrimaryCorrelationEngine, analyst_facing_reduction, incident_to_dict
 from .db import (
     AlertRow,
     CalendarWindowRow,
     RuleRow,
     make_engine,
     make_session_factory,
+    row_to_alert,
     row_to_dict,
     rule_to_dict,
     window_to_dict,
@@ -72,5 +74,24 @@ def list_alerts(
             q = q.filter(AlertRow.attraction == attraction)
         rows = q.order_by(AlertRow.ts.desc()).limit(limit).all()
         return [row_to_dict(r) for r in rows]
+    finally:
+        session.close()
+
+
+@app.get("/incidents")
+def list_incidents():
+    """Groups every alert currently in the database by process-ancestry
+    chain (see app/correlation.py) and returns one fidelity-scored
+    incident per connected component, plus the resulting analyst-facing
+    reduction versus the raw alert count."""
+    session = _SessionFactory()
+    try:
+        rows = session.query(AlertRow).order_by(AlertRow.ts).all()
+        alerts = [row_to_alert(r) for r in rows]
+        incidents = PrimaryCorrelationEngine().group(alerts)
+        return {
+            "incidents": [incident_to_dict(i) for i in incidents],
+            "reduction": analyst_facing_reduction(alerts),
+        }
     finally:
         session.close()

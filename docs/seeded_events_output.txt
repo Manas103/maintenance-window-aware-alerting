@@ -1,4 +1,4 @@
-Seeded scenarios: 40
+﻿Seeded scenarios: 40
 Alerts fired: 40
 
 [01/40] NEW_EXEC_CONTROL_HOST            host=CTRL-SPACEVOY-01     -> ALERTED
