@@ -1,0 +1,34 @@
+title: Unexpected service account logon
+id: UNEXPECTED_SERVICE_LOGON
+status: stable
+description: >
+  A service account (svc_*) logged on interactively or via remote desktop
+  (LogonType 2 or 10) to a control host. Suppressed inside a maintenance
+  window; an incident outside one.
+references:
+  - app/engine.py::PrimaryEngine._service_logon
+logsource:
+  category: authentication
+  product: windows
+  service: security
+detection:
+  selection:
+    kind: logon
+    TargetUserName|startswith: 'svc_'
+    LogonType:
+      - 2
+      - 10
+  condition: selection
+window_aware: true
+falsepositives:
+  - >
+    An administrator deliberately using a service account's credentials
+    for an emergency interactive session when their own account is locked
+    out; confirm against the helpdesk ticket for the lockout before
+    closing as benign, and rotate the service account's credentials
+    afterward regardless.
+level: high
+tags:
+  - attack.privilege_escalation
+  - attack.t1078
+runbook: runbooks/UNEXPECTED_SERVICE_LOGON.md

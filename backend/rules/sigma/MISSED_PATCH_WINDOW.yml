@@ -1,0 +1,35 @@
+title: Missed patch window
+id: MISSED_PATCH_WINDOW
+status: stable
+description: >
+  A published patch-type maintenance window closed with no matching
+  patch_installed telemetry event recorded on the target host during the
+  window. Evaluated once per closed patch window, not per event.
+references:
+  - app/engine.py::PrimaryEngine._missed_patch
+logsource:
+  category: scheduled_task
+  product: maintenance_calendar
+detection:
+  selection:
+    window_type: patch
+    patch_installed_event_in_window: false
+  condition: selection
+window_aware: false
+falsepositives:
+  - >
+    A patch that genuinely installed but whose telemetry agent was itself
+    offline for the duration of the window (a chicken-and-egg case: the
+    agent update was part of the patch); cross-check the host's own patch
+    log or a follow-up telemetry heartbeat before escalating as a missed
+    patch.
+level: medium
+tags:
+  - attack.lateral_movement
+  - attack.t1210
+imperfect: true
+imperfect_note: >
+  ATT&CK has no technique for "a patch did not happen"; T1210 is the
+  technique the missing patch leaves exploitable, not a behavior this rule
+  directly observes.
+runbook: runbooks/MISSED_PATCH_WINDOW.md

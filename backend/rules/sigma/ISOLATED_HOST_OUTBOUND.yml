@@ -1,0 +1,34 @@
+title: Outbound connection from an isolated control host
+id: ISOLATED_HOST_OUTBOUND
+status: stable
+description: >
+  A control host, which should never originate traffic outside the
+  attraction's private range, opened a connection to an address outside
+  10.20.0.0/16. Never suppressed: isolation is not relaxed for maintenance,
+  engineers connect in over the engineering-laptop path instead.
+references:
+  - app/engine.py::PrimaryEngine._isolated_outbound
+logsource:
+  category: network_connection
+  product: endpoint
+detection:
+  selection:
+    kind: netconn
+    src|startswith: 'CTRL-'
+    dst|not_startswith:
+      - '10.20.'
+      - 'ENG-LAPTOP'
+      - 'CTRL-'
+  condition: selection
+window_aware: false
+falsepositives:
+  - >
+    A control host resolving a name through a DNS or NTP relay that was
+    recently re-addressed outside 10.20.0.0/16 without updating the
+    isolation allowlist; confirm against the network change log before
+    escalating, and correct the allowlist either way.
+level: critical
+tags:
+  - attack.command_and_control
+  - attack.t1071
+runbook: runbooks/ISOLATED_HOST_OUTBOUND.md

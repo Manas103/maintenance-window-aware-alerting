@@ -1,0 +1,32 @@
+title: Repeated failed authentication on an HMI
+id: REPEATED_FAILED_AUTH_HMI
+status: stable
+description: >
+  Three or more failed logons (EventID 4625) on the same HMI host within a
+  10-minute span. Never suppressed: a credential guessing attempt is not
+  made acceptable by a maintenance window.
+references:
+  - app/engine.py::PrimaryEngine._repeated_failed_auth
+logsource:
+  category: authentication
+  product: windows
+  service: security
+detection:
+  selection:
+    EventID: 4625
+    kind: logon_failed
+    host|startswith: 'HMI-'
+  timeframe: 10m
+  condition: selection | count() >= 3
+window_aware: false
+falsepositives:
+  - >
+    A shift operator who forgot a recently rotated HMI password and
+    retried it several times in a row before calling the helpdesk; confirm
+    against the password-rotation log and the helpdesk ticket timestamp
+    before escalating.
+level: high
+tags:
+  - attack.credential_access
+  - attack.t1110.001
+runbook: runbooks/REPEATED_FAILED_AUTH_HMI.md

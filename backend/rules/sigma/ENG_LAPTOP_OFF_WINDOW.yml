@@ -1,0 +1,31 @@
+title: Engineering laptop reaching a controller off-window
+id: ENG_LAPTOP_OFF_WINDOW
+status: stable
+description: >
+  An engineering laptop opened a connection to a control host. Suppressed
+  inside a maintenance window for that controller; an incident outside
+  one.
+references:
+  - app/engine.py::PrimaryEngine._eng_laptop
+logsource:
+  category: network_connection
+  product: endpoint
+detection:
+  selection:
+    kind: netconn
+    src|startswith: 'ENG-LAPTOP'
+    dst|startswith: 'CTRL-'
+  condition: selection
+window_aware: true
+falsepositives:
+  - >
+    An engineer validating a fix immediately after a maintenance window
+    closed, before the published window's end time was extended on the
+    calendar to cover the verification pass; confirm against the engineer's
+    own change ticket and extend the window retroactively if the work was
+    authorized.
+level: medium
+tags:
+  - attack.lateral_movement
+  - attack.t1021
+runbook: runbooks/ENG_LAPTOP_OFF_WINDOW.md

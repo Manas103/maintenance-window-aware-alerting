@@ -1,0 +1,1 @@
+RULE MERGE GATE: PASS (every rule carries a Sigma definition, a documented false-positive case, and a response runbook)

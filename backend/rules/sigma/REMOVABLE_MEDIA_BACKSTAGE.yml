@@ -1,0 +1,31 @@
+title: Removable media backstage
+id: REMOVABLE_MEDIA_BACKSTAGE
+status: stable
+description: >
+  A removable storage device was recognized (Windows EventID 6416) on a
+  backstage host. Suppressed inside a published maintenance window; an
+  incident outside one.
+references:
+  - app/engine.py::PrimaryEngine._removable_media
+logsource:
+  category: device
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID: 6416
+    kind: device_added
+    host|startswith: 'BACKSTAGE-'
+  condition: selection
+window_aware: true
+falsepositives:
+  - >
+    A backstage technician's badge-issued USB drive used to sideload a
+    vendor driver update during an unscheduled, verbally-approved visit
+    (common when a published window is still being filed); confirm the
+    technician's badge swipe and work order before closing as benign.
+level: medium
+tags:
+  - attack.initial_access
+  - attack.t1200
+runbook: runbooks/REMOVABLE_MEDIA_BACKSTAGE.md

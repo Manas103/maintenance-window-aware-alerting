@@ -1,0 +1,31 @@
+title: New executable on a control host
+id: NEW_EXEC_CONTROL_HOST
+status: stable
+description: >
+  A process started on a control host whose SHA-256 is not in the host's
+  known-good baseline. Suppressed inside a published maintenance window
+  for that host; an incident outside one.
+references:
+  - app/engine.py::PrimaryEngine._new_exec
+logsource:
+  category: process_creation
+  product: endpoint
+detection:
+  selection:
+    kind: process_start
+    host|startswith: 'CTRL-'
+    sha256|not_in_baseline: true
+  condition: selection
+window_aware: true
+falsepositives:
+  - >
+    A documented emergency vendor patch pushed outside a published
+    maintenance window (no change ticket filed in time for the calendar)
+    will trigger this rule legitimately; verify against the change-ticket
+    log before closing as benign, and backfill a maintenance window if the
+    patch was authorized.
+level: high
+tags:
+  - attack.execution
+  - attack.t1204.002
+runbook: runbooks/NEW_EXEC_CONTROL_HOST.md

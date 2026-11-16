@@ -1,0 +1,32 @@
+title: Control host reboot outside window
+id: CONTROL_HOST_REBOOT_OFF_WINDOW
+status: stable
+description: >
+  A control host logged a planned (EventID 1074) or unexpected (EventID
+  6008) restart. Suppressed inside a maintenance window; an incident
+  outside one.
+references:
+  - app/engine.py::PrimaryEngine._reboot
+logsource:
+  category: system
+  product: windows
+  service: system
+detection:
+  selection:
+    EventID:
+      - 1074
+      - 6008
+    host|startswith: 'CTRL-'
+  condition: selection
+window_aware: true
+falsepositives:
+  - >
+    A control host automatically rebooting to complete a Windows update
+    that installed cleanly inside the window but whose restart timer rolled
+    past the published window's end time; confirm the patch_installed
+    telemetry for the same host and window before escalating.
+level: medium
+tags:
+  - attack.impact
+  - attack.t1529
+runbook: runbooks/CONTROL_HOST_REBOOT_OFF_WINDOW.md

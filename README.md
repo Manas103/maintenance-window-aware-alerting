@@ -4,12 +4,15 @@ A detection engine that scores nine named rules over simulated Windows
 event log, Linux syslog and endpoint process-telemetry sources against a
 published maintenance calendar, so the identical event type is not an
 incident inside a scheduled window and is one outside it, extended with a
-MITRE ATT&CK technique mapped onto every rule and a correlation stage that
+MITRE ATT&CK technique mapped onto every rule, a correlation stage that
 groups alerts sharing a process-ancestry chain into one fidelity-scored
-incident, served by a FastAPI backend and rendered by a React/TypeScript
-dashboard. Stack: Python, FastAPI, SQLAlchemy, React, TypeScript,
-PostgreSQL-shaped schema (SQLite locally), Grafana. Every number below was
-measured on this machine, not targeted.
+incident, and a detection-as-code merge gate that version-controls every
+rule as a Sigma-style YAML definition and blocks it from merging without a
+documented false-positive case and a response runbook, served by a
+FastAPI backend and rendered by a React/TypeScript dashboard. Stack:
+Python, FastAPI, SQLAlchemy, React, TypeScript, PostgreSQL-shaped schema
+(SQLite locally), Grafana, GitHub Actions. Every number below was measured
+on this machine, not targeted.
 
 ## Why this exists
 
@@ -57,6 +60,14 @@ two independently coded implementations that have to agree exactly.
   (MISSED_PATCH_WINDOW, CLOCK_DRIFT) are disclosed, deliberate stretches,
   because ATT&CK has no technique for "a scheduled patch did not happen"
   or "a host's own clock is wrong" (see `app/attack.py` and Findings).
+- **The merge gate is structural, not semantic.** `app/rule_gate.py`
+  verifies that every rule carries a Sigma file, a false-positive entry
+  long enough to be a real sentence rather than a placeholder, and a
+  runbook file with all four required sections; it does not and cannot
+  verify that a documented false-positive case is actually the most
+  likely one, or that a runbook's steps are operationally correct. That
+  judgment call stays with whoever writes the rule; the gate only refuses
+  to let a rule merge with the paperwork missing.
 - **"Process-ancestry chain" is attribution metadata, not a literal
   Sysmon capture.** Every alert in the correlation corpus carries a `pid`
   and `ppid` the way an EDR/SOAR platform would have already resolved
@@ -77,6 +88,7 @@ backend/app/
   generators.py           synthetic Windows event log / syslog / process-telemetry sources + maintenance calendar (two attractions)
   rules.py                    the nine named RuleDef rows (id, name, description, window_aware)
   attack.py                    the MITRE ATT&CK technique mapping, one per rule (see Honest framing)
+  rule_gate.py                    the merge gate: checks every rule has a Sigma file, a documented false-positive case, and a complete runbook
   engine.py                    primary detector: pandas-indexed, evaluates all nine rules against events + calendar
   reference_engine.py    independent oracle: a plain-loop implementation, no pandas, no shared helpers with engine.py
   correlation.py                primary correlation engine: BFS over the pid/ppid graph, fidelity_score formula
@@ -85,6 +97,8 @@ backend/app/
   db.py                        SQLAlchemy schema (Postgres-shaped, SQLite by default), stand-up command for real Postgres
   main.py                     FastAPI app: /health, /rules, /calendar, /alerts, /incidents
   seed_db.py                  loads both corpora through the primary engine into the configured database
+backend/rules/sigma/              9 version-controlled Sigma-style YAML rule definitions, one per rule_id
+backend/runbooks/                9 response runbooks (Triage/Containment/Remediation/Escalation), one per rule_id
 backend/tests/
   test_sources.py               shape checks for the three source types
   test_rules_and_calendar.py  exactly 9 rules, the 5 named categories present, calendar scores every attraction/host
@@ -95,10 +109,12 @@ backend/tests/
   test_correlation.py           chains collapse to 1 incident each, standalones never false-group, reduction measured
   test_correlation_oracle_diff.py  correlation.py vs. reference_correlation.py, exact agreement
   test_api.py                     FastAPI endpoint tests; test_against_real_postgres skips cleanly if POSTGRES_URL is unset/unreachable
+  test_rule_gate.py                 proves the gate blocks on each of 5 distinct missing-paperwork cases, naming the exact rule, and passes clean on the real rule set
 backend/tools/
   dump_oracle_diff.py          raw detection-oracle diff output (docs/oracle_diff.txt)
   dump_seeded_events.py       raw per-scenario detection output (docs/seeded_events_output.txt)
   dump_correlation_output.py   raw correlation measurement output (docs/correlation_output.txt)
+.github/workflows/rule-gate.yml   real CI: runs app.rule_gate then pytest on every push/PR touching backend/
 frontend/src/
   App.tsx                        fetches /alerts, /rules, /calendar, /incidents; renders AlertFeed + CalendarOverlay + IncidentPanel
   components/AlertFeed.tsx    table: time, rule, ATT&CK technique, host, attraction, window state, triggering line(s)
@@ -179,19 +195,44 @@ false-grouping check). Both corpora are seeded into the same alerts table
 so `/incidents` has something real to show; the 40 original alerts, since
 they carry no pid, correctly stay 40 separate singleton incidents.
 
+**The merge gate checks paperwork, not the rules' own logic, and is proven
+against the gate itself, not just invoked once.** `rules.py`,
+`attack.py`, and `engine.py`/`reference_engine.py` are the rule's
+behavior; the Sigma files under `rules/sigma/` and the runbooks under
+`runbooks/` are a second, independent artifact set a rule author has to
+produce alongside that behavior, and `rule_gate.py` is what refuses a
+merge when one is missing. Six tests in `test_rule_gate.py` each copy the
+real rule and runbook trees into a tmp_path, delete or truncate exactly
+one required piece (a missing Sigma file, a placeholder false-positive
+string, a missing `falsepositives` key entirely, a missing runbook file,
+a runbook missing its `## Escalation` section, and a stray Sigma file for
+a rule_id no longer in `rules.py`), and assert the gate names that exact
+rule and that exact reason; a seventh confirms the real, unmutated rule
+set passes clean. That is the difference between "there is a script
+called rule_gate.py" and "the gate actually blocks what it claims to
+block": the red-path tests are the proof, the green-path test is the
+claim.
+
 ## Validation
 
 Backend: `docs/test_output.txt`
 
 ```
-22 passed, 1 skipped in 1.05s
+29 passed, 1 skipped in 1.24s
 ```
 
 (the 1 skip is `test_against_real_postgres`, skipped cleanly because
 `POSTGRES_URL` is unset on this machine; see Honest framing. The count
-grew from 12 to 22 with this extension: 3 ATT&CK-mapping tests, 5
-correlation tests, 1 correlation-oracle-diff test, plus the existing
-`test_api.py` gained an incidents-endpoint test.)
+grew from 12 to 22 with the ATT&CK-mapping/correlation extension (3
+ATT&CK-mapping tests, 5 correlation tests, 1 correlation-oracle-diff
+test, plus an incidents-endpoint test on `test_api.py`), then from 22 to
+29 with this detection-as-code extension, `test_rule_gate.py`'s 7 tests.)
+
+Merge gate, run directly: `docs/rule_gate_output.txt`
+
+```
+RULE MERGE GATE: PASS (every rule carries a Sigma definition, a documented false-positive case, and a response runbook)
+```
 
 Primary vs. reference-engine oracle diff (detection): `docs/oracle_diff.txt`
 
@@ -315,11 +356,20 @@ standalone) was sized for a believable intrusion narrative and a
 realistic one-off-finding count, then measured once the ancestry-graph
 bug above was fixed, landing at 76.1%.
 
+Detection-as-code merge gate (this extension):
+
+| Metric | Measured | Claimed |
+|---|---|---|
+| Rules carrying a version-controlled Sigma definition | **9 / 9** | 9 / 9 |
+| Rules with a documented false-positive case | **9 / 9** | 9 / 9 |
+| Rules with a complete response runbook | **9 / 9** | 9 / 9 |
+| Gate red-path tests (each names the exact missing piece) | **6 / 6** | n/a |
+
 Backend and frontend test counts:
 
 | Metric | Measured |
 |---|---|
-| Backend tests | **22 passed, 1 skipped** (Postgres unreachable) |
+| Backend tests | **29 passed, 1 skipped** (Postgres unreachable) |
 | Frontend tests | **4 / 4 passed** |
 
 All claims were met on the first genuine attempt once the disclosed
@@ -334,13 +384,17 @@ a target.
 cd backend
 python -m venv ../venv
 ../venv/Scripts/python.exe -m pip install -r ../requirements.txt
-../venv/Scripts/python.exe -m pytest -q                        # 22 passed, 1 skipped
+../venv/Scripts/python.exe -m pytest -q                        # 29 passed, 1 skipped
 ../venv/Scripts/python.exe -m uvicorn app.main:app --port 0    # pick a free port; never a fixed busy one
+
+# Run the detection-as-code merge gate directly (also runs in CI, see .github/workflows/rule-gate.yml)
+../venv/Scripts/python.exe -m app.rule_gate
 
 # Regenerate the raw output docs
 ../venv/Scripts/python.exe tools/dump_oracle_diff.py
 ../venv/Scripts/python.exe tools/dump_seeded_events.py
 ../venv/Scripts/python.exe tools/dump_correlation_output.py
+../venv/Scripts/python.exe -m app.rule_gate > ../docs/rule_gate_output.txt
 
 # Against real PostgreSQL instead of local SQLite:
 docker run --name mwaa-postgres -e POSTGRES_PASSWORD=mwaa -e POSTGRES_DB=mwaa -p 5432:5432 -d postgres:16
@@ -402,3 +456,10 @@ calendar, which is the mechanism this project's headline claim depends on.
 - The fidelity-score formula (diversity/volume/lateral-movement weights)
   is a documented, inspectable heuristic, not validated against a labeled
   incident-severity dataset, since none exists for this synthetic domain.
+- The merge gate (`rule_gate.py`) checks structural completeness (a
+  Sigma file exists, its false-positive text clears a length floor rather
+  than being a placeholder, its runbook exists and carries all four
+  required sections); it does not and cannot judge whether a documented
+  false-positive case is the single most likely one or whether a
+  runbook's steps are operationally correct, both of which stay a human
+  judgment call.

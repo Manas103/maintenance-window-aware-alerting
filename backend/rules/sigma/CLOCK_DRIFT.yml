@@ -1,0 +1,36 @@
+title: Clock drift
+id: CLOCK_DRIFT
+status: stable
+description: >
+  A host's self-reported clock differs from the collector's receive time
+  by more than 120 seconds. Never suppressed: a drifted clock is a problem
+  on a maintenance day too, because it poisons every other timestamp-based
+  control for that host.
+references:
+  - app/engine.py::PrimaryEngine._clock_drift
+logsource:
+  category: process_creation
+  product: endpoint
+  definition: 'kind=clock_check telemetry heartbeat'
+detection:
+  selection:
+    kind: clock_check
+    drift_seconds|gt: 120
+  condition: selection
+window_aware: false
+falsepositives:
+  - >
+    A host that just rejoined the network after a long sleep/hibernate
+    cycle and has not yet completed its first NTP sync; confirm the host's
+    NTP service state and re-check drift a few minutes later before
+    escalating.
+level: low
+tags:
+  - attack.defense_evasion
+  - attack.t1070.006
+imperfect: true
+imperfect_note: >
+  Timestomp is adversary tampering with file timestamps; a drifted host
+  clock is the closest ATT&CK neighbor for a timestamp-integrity problem,
+  not the same mechanism.
+runbook: runbooks/CLOCK_DRIFT.md
